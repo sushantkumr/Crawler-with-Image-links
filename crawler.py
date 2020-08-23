@@ -18,6 +18,11 @@ class Crawler():
 
 
     def print_output(self):
+        '''
+        Print the lists of the URLs and Image sources collected
+        @input:
+            url: URL to be scraped
+        '''
         for key, value in self.parent_link.items():
             print('\n\n')
             print('**********************************************************************************')
@@ -32,6 +37,11 @@ class Crawler():
 
 
     def get_website_assets(self, url):
+        '''
+        Calls fetch() depending on the depth required
+        @input:
+            url: URL to be scraped
+        '''
         self.fetch(url)
         if (len(self.parent_link.keys()) == self.depth):
             return
@@ -48,7 +58,7 @@ class Crawler():
             - scrape for anchor tags with hrefs in a webpage
             - reject if unwanted or cleanup the obtained links
             - append to a set to remove duplicates
-            - "crawled_urls" is the repository for crawled URLs
+            - "urls_to_crawl" is the repository for crawled URLs
         @input:
             url: URL to be scraped
         '''
