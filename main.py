@@ -1,34 +1,17 @@
 import argparse
 from bs4 import BeautifulSoup, SoupStrainer
 from urllib.request import urlopen
-from urllib.parse import urljoin, urlparse
 from urllib.error import HTTPError, URLError
+from helpers import is_url_valid, get_clean_url
 
 parser = argparse.ArgumentParser(description='Simple Web Crawler')
 parser.add_argument('-u', '--url', metavar='', default='https://mix.com',
                     type=str, help='Seed URL for crawling')
 args = parser.parse_args()
 
+
 URLS_TO_CRAWL = []
 PARENT_LINK = {}
-
-
-def is_url_valid(link):
-    if not link or any(ext in link for ext in ('.pdf', 'docx')) \
-            or link.startswith('mailto:'):
-        return False
-    else:
-        return True
-
-
-def get_clean_url(parent_url, link):
-    if parent_url[0:4] != "http":
-        parent_url = "http://" + parent_url
-
-    if not bool(urlparse(link).netloc):
-        link = urljoin(parent_url, link.strip())
-
-    return link
 
 
 def getWebsiteAssets(url):
