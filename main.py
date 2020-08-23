@@ -8,6 +8,18 @@ parser.add_argument('-u', '--url', metavar='', default='https://mix.com',
                     type=str, help='Seed URL for crawling')
 args = parser.parse_args()
 
+URLS_TO_CRAWL = []
+PARENT_LINK = {}
+
+def getWebsiteAssets(url):
+    links, image_sources = fetch(url)
+    print(links)
+    print(image_sources)
+    if (len(PARENT_LINK.keys()) == 2):
+        return
+    else:
+        return getWebsiteAssets(URLS_TO_CRAWL.pop(0))
+
 
 def fetch(url):
     scraped_urls = []
@@ -26,6 +38,8 @@ def fetch(url):
 
         scraped_urls = list(set(scraped_urls))  # To remove repitions
         scraped_img_src = list(set(scraped_img_src))  # To remove repitions
+        URLS_TO_CRAWL.extend(scraped_urls)
+        PARENT_LINK[url] = [scraped_urls, scraped_img_src]
 
     except HTTPError as e:
         print('HTTPError:' + str(e.code) + ' in ', url)
@@ -40,6 +54,4 @@ def fetch(url):
 
 if __name__ == '__main__':
     print('URL: ', args.url)
-    links, image_sources = fetch(args.url)
-    print(links)
-    print(image_sources)
+    getWebsiteAssets(args.url)
