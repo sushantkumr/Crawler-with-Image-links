@@ -1,6 +1,7 @@
 import argparse
 from bs4 import BeautifulSoup, SoupStrainer
 from urllib.request import urlopen
+from urllib.parse import urljoin, urlparse
 from urllib.error import HTTPError, URLError
 
 parser = argparse.ArgumentParser(description='Simple Web Crawler')
@@ -11,12 +12,24 @@ args = parser.parse_args()
 URLS_TO_CRAWL = []
 PARENT_LINK = {}
 
+
 def is_url_valid(link):
     if not link or any(ext in link for ext in ('.pdf', 'docx')) \
             or link.startswith('mailto:'):
         return False
     else:
         return True
+
+
+def get_clean_url(parent_url, link):
+    if parent_url[0:4] != "http":
+        parent_url = "http://" + parent_url
+
+    if not bool(urlparse(link).netloc):
+        link = urljoin(parent_url, link.strip())
+
+    return link
+
 
 def getWebsiteAssets(url):
     links, image_sources = fetch(url)
@@ -32,18 +45,20 @@ def fetch(url):
     scraped_urls = []
     scraped_img_src = []
     try:
-        if is_url_valid(url)
+        if is_url_valid(url):
             page = urlopen(url)
             content = page.read()
             soup = BeautifulSoup(content, 'lxml', parse_only=SoupStrainer('a'))
             for anchor in soup.find_all('a'):
                 link = anchor.get('href')
-                if is_url_valid(link)
+                if is_url_valid(link):
+                    link = get_clean_url(url, link)
                     scraped_urls.append(link)
 
             for anchor in soup.find_all('img'):
                 link = anchor.get('src')
                 if is_url_valid(link):
+                    link = get_clean_url(url, link)
                     scraped_img_src.append(link)
 
             scraped_urls = list(set(scraped_urls))  # To remove repitions
