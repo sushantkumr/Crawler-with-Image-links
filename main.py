@@ -11,4 +11,5 @@ args = parser.parse_args()
 
 
 if __name__ == '__main__':
-    Crawler(args.url, args.depth)
+    obj = Crawler(args.url, args.depth)
+    obj.print_output()
