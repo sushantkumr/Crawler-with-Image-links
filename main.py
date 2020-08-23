@@ -7,6 +7,8 @@ from helpers import is_url_valid, get_clean_url
 parser = argparse.ArgumentParser(description='Simple Web Crawler')
 parser.add_argument('-u', '--url', metavar='', default='https://mix.com',
                     type=str, help='Seed URL for crawling')
+parser.add_argument('-d', '--depth', metavar='', default=1,
+                    type=int, help='Number of links to crawl over')
 args = parser.parse_args()
 
 
@@ -14,11 +16,11 @@ URLS_TO_CRAWL = []
 PARENT_LINK = {}
 
 
-def getWebsiteAssets(url):
+def getWebsiteAssets(url, depth):
     links, image_sources = fetch(url)
     print(links)
     print(image_sources)
-    if (len(PARENT_LINK.keys()) == 2):
+    if (len(PARENT_LINK.keys()) == depth):
         return
     else:
         return getWebsiteAssets(URLS_TO_CRAWL.pop(0))
@@ -62,4 +64,5 @@ def fetch(url):
 
 if __name__ == '__main__':
     print('URL: ', args.url)
-    getWebsiteAssets(args.url)
+    print('Depth: ', args.depth)
+    getWebsiteAssets(args.url, args.depth)
