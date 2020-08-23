@@ -11,6 +11,13 @@ args = parser.parse_args()
 URLS_TO_CRAWL = []
 PARENT_LINK = {}
 
+def is_url_valid(link):
+    if not link or any(ext in link for ext in ('.pdf', 'docx')) \
+            or link.startswith('mailto:'):
+        return False
+    else:
+        return True
+
 def getWebsiteAssets(url):
     links, image_sources = fetch(url)
     print(links)
@@ -25,21 +32,24 @@ def fetch(url):
     scraped_urls = []
     scraped_img_src = []
     try:
-        page = urlopen(url)
-        content = page.read()
-        soup = BeautifulSoup(content, 'lxml', parse_only=SoupStrainer('a'))
-        for anchor in soup.find_all('a'):
-            link = anchor.get('href')
-            scraped_urls.append(link)
+        if is_url_valid(url)
+            page = urlopen(url)
+            content = page.read()
+            soup = BeautifulSoup(content, 'lxml', parse_only=SoupStrainer('a'))
+            for anchor in soup.find_all('a'):
+                link = anchor.get('href')
+                if is_url_valid(link)
+                    scraped_urls.append(link)
 
-        for anchor in soup.find_all('img'):
-            link = anchor.get('src')
-            scraped_img_src.append(link)
+            for anchor in soup.find_all('img'):
+                link = anchor.get('src')
+                if is_url_valid(link):
+                    scraped_img_src.append(link)
 
-        scraped_urls = list(set(scraped_urls))  # To remove repitions
-        scraped_img_src = list(set(scraped_img_src))  # To remove repitions
-        URLS_TO_CRAWL.extend(scraped_urls)
-        PARENT_LINK[url] = [scraped_urls, scraped_img_src]
+            scraped_urls = list(set(scraped_urls))  # To remove repitions
+            scraped_img_src = list(set(scraped_img_src))  # To remove repitions
+            URLS_TO_CRAWL.extend(scraped_urls)
+            PARENT_LINK[url] = [scraped_urls, scraped_img_src]
 
     except HTTPError as e:
         print('HTTPError:' + str(e.code) + ' in ', url)
