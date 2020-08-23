@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup, SoupStrainer
+from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from urllib.error import HTTPError, URLError
 from helpers import is_url_valid, get_clean_url
@@ -23,9 +23,10 @@ class Crawler():
             print('\n\n')
             print('**********************************************************************************')
             print('PARENT LINK : ', key)
+            print('\n')
             print(*value[0], sep='\n')
             print('HYPERLINKS: ', len(value[0]))
-            print('\n\n')
+            print('\n')
             print(*value[1], sep='\n')
             print('IMAGE SOURCES: ', len(value[1]))
             print('**********************************************************************************')
@@ -56,7 +57,7 @@ class Crawler():
             if is_url_valid(url):
                 page = urlopen(url)
                 content = page.read()
-                soup = BeautifulSoup(content, 'lxml', parse_only=SoupStrainer('a'))
+                soup = BeautifulSoup(content, 'lxml')
                 for anchor in soup.find_all('a'):
                     link = anchor.get('href')
                     if is_url_valid(link):
