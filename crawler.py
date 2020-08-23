@@ -13,7 +13,6 @@ class Crawler():
             self.depth = depth
             self.urls_to_crawl = []
             self.getWebsiteAssets(url)
-            self.print_output()
         else:
             print('Invalid URL entered')
 
@@ -37,7 +36,10 @@ class Crawler():
         if (len(self.parent_link.keys()) == self.depth):
             return
         else:
-            return self.getWebsiteAssets(self.urls_to_crawl.pop(0))
+            if len(self.urls_to_crawl) > 0:
+                return self.getWebsiteAssets(self.urls_to_crawl.pop(0))
+            else:
+                return
 
 
     def fetch(self, url):
